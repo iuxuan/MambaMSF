@@ -2,11 +2,11 @@
 
 This repository contains the implementation of **MambaMSF**, a hyperspectral image (HSI) classification method that integrates multi-scale feature fusion with the Mamba architecture.
 
-## 📄 Reference
+##  Reference
 **MambaMSF: A Mamba-based Multi-scale Feature Fusion Method for Hyperspectral Image Classification**
 *Junyan Xuan, Zhenzhen Ren, Bin Deng, Yikui Zhai*
 
-## 🛠️ Environment Setup
+##  Environment Setup
 
 This project requires Python 3.8+ and PyTorch.
 
@@ -37,7 +37,7 @@ data/
 
 > **Note**: Due to file size limits and copyright, the original `.mat` data files are not included in this repository. Please download them from their respective sources and place them in the `data/` directory as shown above.
 
-## 🚀 Usage
+##  Usage
 
 To train and evaluate the model, you can select the target dataset in `config.py`.
 
@@ -60,13 +60,13 @@ You can modify `config.py` to change training parameters:
 - `max_epoch`: Number of training epochs (Default: 200)
 - `device`: GPU device (e.g., "cuda:0")
 
-## 📊 Results
+##  Results
 
 ### Pavia University (UP)
 - **Overall Accuracy (OA)**: ~96.27% (Our Run) / ~96.65% (Paper)
 - **Average Accuracy (AA)**: ~97.12%
 - **Kappa Coefficient**: ~0.95
 
-## 🔧 Troubleshooting
+##  Troubleshooting
 - **`torch.load` warning**: The code has been updated to handle `weights_only=True` for safer checkpoint loading.
 - **`calflops` / `spectral` errors**: Ensure these packages are installed via `pip install calflops spectral`.
