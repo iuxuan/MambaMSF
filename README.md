@@ -57,7 +57,7 @@ python train_MambaMSF.py
 ## Results
 
 ### Pavia University (UP)
-- **Overall Accuracy (OA)**: 96.17%
+- **Overall Accuracy (OA)**: 96.74%
 - **Average Accuracy (AA)**: 97.11%
 - **Kappa Coefficient**: 96.63%
 
