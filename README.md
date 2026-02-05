@@ -35,7 +35,7 @@ data/
 
 ## Dataset Download
 You can download the processed datasets (UP, HanChuan, HongHu) from Google Drive:
-**https://drive.google.com/drive/folders/1lsj3U7SAv4JkFMiWYKq_MS0nvFqQ0rfu?usp=drive_link** (Please verify this link)
+**https://drive.google.com/drive/folders/1lsj3U7SAv4JkFMiWYKq_MS0nvFqQ0rfu?usp=drive_link**
 
 ## Usage
 
@@ -57,9 +57,9 @@ python train_MambaMSF.py
 ## Results
 
 ### Pavia University (UP)
-- **Overall Accuracy (OA)**: 96.65%
-- **Average Accuracy (AA)**: 95.36%
-- **Kappa Coefficient**: 0.956
+- **Overall Accuracy (OA)**: 96.17%
+- **Average Accuracy (AA)**: 97.11%
+- **Kappa Coefficient**: 96.63%
 
 ## Reference
 
