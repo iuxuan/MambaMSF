@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch
+*.pth
+*.pt
+
+# Data
+data/
+!data/.keep
+!data/UP/.keep
+!data/HanChuan/.keep
+!data/HongHu/.keep
+
+# Logs and Results
+RUNS/
+*.log
+*.png
+*.txt
+.ipynb_checkpoints/
+.DS_Store
