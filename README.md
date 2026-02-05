@@ -3,8 +3,21 @@
 This repository contains the implementation of **MambaMSF**, a hyperspectral image (HSI) classification method that integrates multi-scale feature fusion with the Mamba architecture.
 
 ## 📄 Reference
-**MambaMSF: A Mamba-based Multi-scale Feature Fusion Method for Hyperspectral Image Classification**
-*Junyan Xuan, Zhenzhen Ren, Bin Deng, Yikui Zhai*
+
+If you use this code for your research, please cite our paper:
+
+```bibtex
+@INPROCEEDINGS{11065432, 
+   author={Xuan, Junyan and Ren, Zhenzhen and Deng, Bin and Zhai, Yikui}, 
+   booktitle={2025 IEEE 7th International Conference on Communications, Information System and Computer Engineering (CISCE)}, 
+   title={MambaMSF: A Mamba-based Multi-scale Feature Fusion Method for Hyperspectral Image Classification}, 
+   year={2025}, 
+   volume={}, 
+   number={}, 
+   pages={388-392}, 
+   keywords={Learning systems;Adaptation models;Computer architecture;Feature extraction;Data models;Spatial databases;Faces;Hyperspectral imaging;Image classification;Information systems;Hyperspectral image classification;Multi-scale feature fusion;Adaptive fusion mechanism;Mamba}, 
+   doi={10.1109/CISCE65916.2025.11065432}}
+```
 
 ## 🛠️ Environment Setup
 
@@ -63,9 +76,13 @@ You can modify `config.py` to change training parameters:
 ## 📊 Results
 
 ### Pavia University (UP)
-- **Overall Accuracy (OA)**: ~96.27% (Our Run) / ~96.65% (Paper)
-- **Average Accuracy (AA)**: ~97.12%
-- **Kappa Coefficient**: ~0.95
+- **Overall Accuracy (OA)**: 96.65%
+- **Average Accuracy (AA)**: 95.36%
+- **Kappa Coefficient**: 0.956
+
+## 📥 Dataset Download
+You can download the processed datasets (UP, HanChuan, HongHu) from Google Drive:
+**[Link to Google Drive Dataset]** (Please verify this link)
 
 ## 🔧 Troubleshooting
 - **`torch.load` warning**: The code has been updated to handle `weights_only=True` for safer checkpoint loading.
