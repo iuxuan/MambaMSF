@@ -45,7 +45,6 @@ def main():
     loss_func = torch.nn.CrossEntropyLoss(ignore_index=-1)
     evaluator = Evaluator(num_class=class_count)
 
-    # 记录结果
     OA_ALL = []
     AA_ALL = []
     KPP_ALL = []
@@ -57,7 +56,6 @@ def main():
     for exp_idx, curr_seed in enumerate(cfg.seed_list):
         setup_seed(curr_seed)
         
-        # 创建实验目录
         single_experiment_name = f'run{exp_idx}_seed{curr_seed}'
         save_single_experiment_folder = os.path.join(save_folder, single_experiment_name)
         if not os.path.exists(save_single_experiment_folder):
@@ -67,7 +65,6 @@ def main():
         if not os.path.exists(save_vis_folder):
             os.makedirs(save_vis_folder)
 
-        # 设置保存路径
         save_weight_path = os.path.join(save_single_experiment_folder, 
                                       f"best_tr{cfg.train_samples}_val{cfg.val_samples}.pth")
         results_save_path = os.path.join(save_single_experiment_folder, 
@@ -77,7 +74,6 @@ def main():
         gt_save_path = os.path.join(save_single_experiment_folder, 
                                    f'gt_vis_tr{cfg.train_samples}_val{cfg.val_samples}.png')
 
-        # 数据采样
         train_data_index, val_data_index, test_data_index, all_data_index = data_load_operate.sampling(
             cfg.ratio_list, [cfg.train_samples, cfg.val_samples], gt_reshape, class_count, cfg.flag_list[0]
         )
@@ -87,7 +83,6 @@ def main():
             data, height, width, gt_reshape, index
         )
 
-        # 构建模型
         net = MambaMSF(in_channels=channels, num_classes=class_count, hidden_dim=cfg.hidden_dim)
         logger.info(net)
 
@@ -104,23 +99,18 @@ def main():
         logger.info(optimizer)
 
         best_val_acc = 0.0
-        # 记录训练开始时间
         train_start_time = time.time()
 
-        # 训练循环
         for epoch in range(cfg.max_epoch):
             y_train = train_label.unsqueeze(0)
             net.train()
 
-            # 训练阶段
             if cfg.split_image:
-                # 分割图像训练逻辑
                 x_part1 = x[:, :, :x.shape[2] // 2+5, :]
                 y_part1 = y_train[:,:x.shape[2] // 2+5,:]
                 x_part2 = x[:, :, x.shape[2] // 2 - 5: , :]
                 y_part2 = y_train[:,x.shape[2] // 2 - 5:,:]
                 
-                # 第一部分
                 y_pred_part1 = net(x_part1)
                 ls1 = head_loss(loss_func, y_pred_part1, y_part1.long())
                 optimizer.zero_grad()
@@ -128,7 +118,6 @@ def main():
                 optimizer.step()
                 torch.cuda.empty_cache()
 
-                # 第二部分
                 y_pred_part2 = net(x_part2)
                 ls2 = head_loss(loss_func, y_pred_part2, y_part2.long())
                 optimizer.zero_grad()
@@ -146,13 +135,12 @@ def main():
                     optimizer.step()
                     logger.info(f'Iter:{epoch}|loss:{ls.detach().cpu().numpy()}')
                 except:
-                    # 如果整图训练失败,切换到分图训练
                     optimizer.zero_grad()
                     torch.cuda.empty_cache()
                     cfg.split_image = True
                     continue
 
-            # 评估阶段
+            # eval
             net.eval()
             with torch.no_grad():
                 evaluator.reset()
@@ -190,12 +178,11 @@ def main():
                 
                 logger.info(f'Evaluate {epoch}|OA:{OA}|MACC:{mAcc}|Kappa:{Kappa}|MIOU:{mIOU}|IOU:{IOU}|ACC:{Acc}')
 
-                # 保存最佳模型
+                # save model
                 if OA >= best_val_acc:
                     best_val_acc = OA
                     torch.save(net.state_dict(), save_weight_path)
  
-                # 定期保存预测结果可视化
                 if (epoch+1) % 50 == 0:
                     save_single_predict_path = os.path.join(save_vis_folder, f'predict_{epoch+1}.png')
                     save_single_gt_path = os.path.join(save_vis_folder, 'gt.png')
@@ -203,20 +190,16 @@ def main():
 
             torch.cuda.empty_cache()
 
-        # 记录训练结束时间
         train_end_time = time.time()
         train_time = train_end_time - train_start_time
         Train_Time_ALL.append(train_time)
 
-        # 测试阶段
         logger.info("\n\n====================Starting evaluation for testing set.========================\n")
-        
-        # 记录测试开始时间
+
         test_start_time = time.time()
         
         best_net = MambaMSF(in_channels=channels, num_classes=class_count, hidden_dim=cfg.hidden_dim)
         best_net.to(cfg.device)
-        # 加载最佳模型权重
         if os.path.exists(save_weight_path):
             try:
                 best_net.load_state_dict(torch.load(save_weight_path, weights_only=True))
@@ -263,12 +246,10 @@ def main():
             logger.info(f'Test {epoch}|OA:{OA_test}|MACC:{mAcc_test}|Kappa:{Kappa_test}|MIOU:{mIOU_test}|IOU:{IOU_test}|ACC:{Acc_test}')
             vis_a_image(gt, predict_test, predict_save_path, gt_save_path)
 
-        # 记录测试结束时间
         test_end_time = time.time()
         test_time = test_end_time - test_start_time
         Test_Time_ALL.append(test_time)
 
-        # 保存结果
         with open(results_save_path, 'a+') as f:
             str_results = (f'\n======================'
                          f" exp_idx={exp_idx}"
@@ -286,7 +267,6 @@ def main():
                          f"\nAcc_test:{Acc_test}\n")
             f.write(str_results)
 
-        # 记录结果
         OA_ALL.append(OA_test)
         AA_ALL.append(mAcc_test)
         KPP_ALL.append(Kappa_test)
@@ -294,7 +274,6 @@ def main():
         
         torch.cuda.empty_cache()
 
-    # 计算平均结果
     OA_ALL = np.array(OA_ALL)
     AA_ALL = np.array(AA_ALL)
     KPP_ALL = np.array(KPP_ALL)
@@ -302,7 +281,6 @@ def main():
     Train_Time_ALL = np.array(Train_Time_ALL)
     Test_Time_ALL = np.array(Test_Time_ALL)
 
-    # 输出最终结果
     logger.info(f"\n====================Mean result of {len(cfg.seed_list)} times runs =========================")
     logger.info(f'List of OA: {list(OA_ALL)}')
     logger.info(f'List of AA: {list(AA_ALL)}')
@@ -315,7 +293,6 @@ def main():
     logger.info("Average testing time=", round(np.mean(Test_Time_ALL) * 1000, 2), '+-',
           round(np.std(Test_Time_ALL) * 1000, 3))
 
-    # 保存平均结果
     mean_result_path = os.path.join(save_folder, 'mean_result.txt')
     with open(mean_result_path, 'w') as f:
         str_results = (f'\n\n***************Mean result of {len(cfg.seed_list)} times runs ********************'
