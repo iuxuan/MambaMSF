@@ -1,0 +1,9 @@
+torch>=2.4.1
+torchvision>=0.19.1
+numpy>=1.26.0
+scipy>=1.15.0
+scikit-learn>=1.5.0
+h5py>=3.10.0
+mamba-ssm>=2.2.0
+calflops>=0.3.0
+spectral>=0.24
